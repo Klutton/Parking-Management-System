@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parking Management System</h1>
+    <div id="vehicle-info">
+        <h2>Your Vehicles</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plate</th>
+                    <th>Permissions</th>
+                    <th>Last Entry</th>
+                    <th>Last Time Out</th>
+                </tr>
+            </thead>
+            <tbody id="vehicle-list">
+                <!-- Vehicle information will be appended here -->
+            </tbody>
+        </table>
+    </div>
+    <div class="actions">
+        <a href="/vehicle/register">Register Vehicle</a> |
+        <a href="/vehicle/pay">Pay for Vehicle</a> |
+        <a href="/vehicle/update">Update Vehicle</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('/get_info');
+            const data = await response.json();
+
+            if (data.vehicles) {
+                const vehicleList = document.getElementById('vehicle-list');
+                data.vehicles.forEach(vehicle => {
+                    const row = document.createElement('tr');
+
+                    const lastEntryTime = vehicle["last entry"].time !== "N/A" ? new Date(vehicle["last entry"].time).toLocaleString() : "N/A";
+                    const lastEntryArea = vehicle["last entry"]["parking area"] || "N/A";
+                    const lastOutTime = vehicle["last time out"].time !== "N/A" ? new Date(vehicle["last time out"].time).toLocaleString() : "N/A";
+                    const lastOutArea = vehicle["last time out"]["parking area"] || "N/A";
+
+                    row.innerHTML = `
+                        <td>${vehicle.plate}</td>
+                        <td>${vehicle.permissions}</td>
+                        <td>${lastEntryTime} (${lastEntryArea})</td>
+                        <td>${lastOutTime} (${lastOutArea})</td>
+                    `;
+
+                    vehicleList.appendChild(row);
+                });
+            } else {
+                alert('Failed to load vehicle information');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Parking Management System</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="register-form" onsubmit="register(event)">
+        <label for="register-username">Username:</label>
+        <input type="text" id="register-username" name="username" required><br><br>
+        <label for="register-password">Password:</label>
+        <input type="password" id="register-password" name="password" required><br><br>
+        <label for="register-department">Department:</label>
+        <input type="text" id="register-department" name="department" required><br><br>
+        <label for="register-room_num">Room Number:</label>
+        <input type="text" id="register-room_num" name="room_num" required><br><br>
+        <label for="register-phone">Phone:</label>
+        <input type="text" id="register-phone" name="phone" required><br><br>
+        <button type="submit">Register</button>
+    </form>
+    <a href="/login">login</a>
+    <script>
+        async function register(event) {
+            event.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const department = document.getElementById('register-department').value;
+            const room_num = document.getElementById('register-room_num').value;
+            const phone = document.getElementById('register-phone').value;
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, department, room_num, phone }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('Registration successful');
+                window.location.href = '/login';  // 注册成功后跳转到登录页面
+            } else {
+                alert('Registration failed: ' + result.message);
+            }
+        }
+    </script>
+</body>
+</html>

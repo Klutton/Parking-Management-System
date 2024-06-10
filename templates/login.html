@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Parking Management System</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="login-form" onsubmit="login(event)">
+        <label for="login-phone">Phone Number:</label>
+        <input type="text" id="login-phone" name="phone" required><br><br>
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+    <a href="/register">register</a>
+    <script>
+        async function login(event) {
+            event.preventDefault();
+            const phone = document.getElementById('login-phone').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ phone, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert('Login successful');
+                window.location.href = '/';  // 登录成功后跳转
+            } else {
+                alert('Login failed: ' + result.message);
+            }
+        }
+    </script>
+</body>
+</html>

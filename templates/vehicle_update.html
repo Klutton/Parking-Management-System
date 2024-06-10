@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Vehicle - Parking Management System</title>
+</head>
+<body>
+    <h2>Update a Vehicle</h2>
+    <form id="vehicle-update-form">
+        <label for="plate">Plate:</label>
+        <input type="text" id="plate" name="plate" required><br>
+        <label for="permissions">New Permissions:</label>
+        <input type="text" id="permissions" name="permissions" required><br>
+        <button type="submit">Update</button>
+    </form>
+    <h2>Delete a Vehicle</h2>
+    <form id="vehicle-delete-form">
+        <label for="delete-plate">Plate:</label>
+        <input type="text" id="delete-plate" name="delete-plate" required><br>
+        <button type="submit">Delete</button>
+    </form>
+    <p id="message"></p>
+    <a href="/">back</a>
+    <script>
+        document.getElementById('vehicle-update-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const plate = document.getElementById('plate').value;
+            const permissions = document.getElementById('permissions').value;
+            const response = await fetch('/vehicle/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plate, permissions })
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+        });
+
+        document.getElementById('vehicle-delete-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const plate = document.getElementById('delete-plate').value;
+            const response = await fetch('/vehicle/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plate })
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+        });
+    </script>
+</body>
+</html>

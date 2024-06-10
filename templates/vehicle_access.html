@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Submission - Parking Management System</title>
+</head>
+<body>
+    <h2>Vehicle Access</h2>
+    <form id="vehicle-access-form">
+        <label for="parking_id">Parking Area ID:</label>
+        <input type="text" id="parking_id" name="parking_id" required><br>
+        <label for="plate">Plate:</label>
+        <input type="text" id="plate" name="plate" required><br>
+        <label for="action">Action:</label>
+        <select id="action" name="action" required>
+            <option value="IN">IN</option>
+            <option value="OUT">OUT</option>
+        </select><br>
+        <button type="submit">Submit</button>
+    </form>
+    <p id="message"></p>
+    <a href="/">back</a>
+    <script>
+        document.getElementById('vehicle-access-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const parking_id = document.getElementById('parking_id').value;
+            const plate = document.getElementById('plate').value;
+            const action = document.getElementById('action').value;
+            const response = await fetch('/vehicle/access', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ parking_id, plate, action })
+            });
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message;
+        });
+    </script>
+</body>
+</html>

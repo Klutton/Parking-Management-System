@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay for Vehicle - Parking Management System</title>
+    <style>
+        #animation {
+            display: none;
+            width: 100px;
+            height: 100px;
+            background-color: lightgreen;
+            margin: 20px auto;
+            text-align: center;
+            line-height: 100px;
+            font-size: 1.5em;
+        }
+        .info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Pay for Vehicle</h2>
+    <form id="vehicle-pay-form">
+        <label for="plate">Plate:</label>
+        <input type="text" id="plate" name="plate" required><br>
+        <button type="submit">Pay</button>
+    </form>
+    <div id="animation">SUCCESS</div>
+    <div class="info">
+        <p id="message"></p>
+        <p id="in_time"></p>
+        <p id="out_time"></p>
+        <p id="time_interval"></p>
+    </div>
+    <a href="/">back</a>
+    <script>
+        document.getElementById('vehicle-pay-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const plate = document.getElementById('plate').value;
+            const response = await fetch('/vehicle/pay', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plate })
+            });
+            const result = await response.json();
+
+            document.getElementById('message').textContent = result.message;
+
+            const inTime = new Date(result.in_time).toLocaleString();
+            const outTime = new Date(result.out_time).toLocaleString();
+            const timeInterval = formatInterval(result.time_interval);
+
+            document.getElementById('in_time').textContent = `Last entry: ${inTime}`;
+            document.getElementById('out_time').textContent = `Last exit: ${outTime}`;
+            document.getElementById('time_interval').textContent = `Duration: ${timeInterval}`;
+
+            if (result.message === "Vehicle payment successful") {
+                const animation = document.getElementById('animation');
+                animation.style.display = 'block';
+                setTimeout(() => {
+                    animation.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        function formatInterval(interval) {
+            const parts = interval.split(':');
+            const hours = parts[0].padStart(2, '0');
+            const minutes = parts[1].padStart(2, '0');
+            const seconds = parts[2].split('.')[0].padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+    </script>
+</body>
+</html>
